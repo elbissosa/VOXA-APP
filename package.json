@@ -1,0 +1,10 @@
+{
+  "name": "voxa-app",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "@netlify/database": "latest",
+    "@netlify/functions": "latest",
+    "stripe": "latest"
+  }
+}

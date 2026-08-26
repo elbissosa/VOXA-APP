@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOXA — Panel de Administrador</title>
+<style>
+  :root {
+    --bg: #0a0e14;
+    --panel: #121826;
+    --border: #1f2937;
+    --teal: #2dd4bf;
+    --red: #ef4444;
+    --text: #e5e7eb;
+    --muted: #9ca3af;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: radial-gradient(circle at top, #111827, #05070a 70%);
+    color: var(--text);
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    min-height: 100vh;
+  }
+  #loginScreen {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+  }
+  .login-box {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 40px;
+    width: 340px;
+    box-shadow: 0 0 40px rgba(45, 212, 191, 0.08);
+  }
+  .login-box h1 { font-size: 20px; margin-bottom: 4px; color: var(--teal); }
+  .login-box p { color: var(--muted); font-size: 13px; margin-bottom: 24px; }
+  .login-box input {
+    width: 100%; padding: 12px 14px; margin-bottom: 12px;
+    background: #0d1420; border: 1px solid var(--border); border-radius: 8px;
+    color: var(--text); font-size: 14px;
+  }
+  .login-box button {
+    width: 100%; padding: 12px; background: var(--teal); color: #04211c;
+    font-weight: 700; border: none; border-radius: 8px; cursor: pointer; font-size: 14px;
+  }
+  .login-box button:disabled { opacity: 0.6; cursor: default; }
+  #loginError { color: var(--red); font-size: 13px; margin-top: 10px; min-height: 16px; }
+
+  #dashboard { display: none; padding: 24px; max-width: 1100px; margin: 0 auto; }
+  header.topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+  header.topbar h1 { color: var(--teal); font-size: 22px; margin: 0; }
+  header.topbar .status-pill { padding: 6px 14px; border-radius: 999px; font-size: 12px; font-weight: 700; }
+  .status-online { background: rgba(45, 212, 191, .15); color: var(--teal); }
+  .status-maintenance { background: rgba(239, 68, 68, .15); color: var(--red); }
+
+  .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; margin-bottom: 28px; }
+  .stat-card { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 18px; }
+  .stat-card .num { font-size: 28px; font-weight: 800; color: var(--teal); }
+  .stat-card .label { color: var(--muted); font-size: 13px; margin-top: 4px; }
+
+  section { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 20px; }
+  section h2 { margin-top: 0; font-size: 16px; color: var(--text); }
+
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--border); }
+  th { color: var(--muted); font-weight: 600; }
+
+  .plan-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
+  .plan-row .plan-name { width: 100px; font-weight: 700; }
+  .plan-row input[type=number] {
+    width: 90px; padding: 6px 8px; background: #0d1420; border: 1px solid var(--border);
+    border-radius: 6px; color: var(--text);
+  }
+  .plan-row button, .toggle-btn {
+    padding: 6px 12px; background: transparent; border: 1px solid var(--teal); color: var(--teal);
+    border-radius: 6px; cursor: pointer; font-size: 12px;
+  }
+  .toggle-btn.danger { border-color: var(--red); color: var(--red); }
+  .toggle-btn.active-on { background: var(--teal); color: #04211c; }
+  .toggle-btn.active-off { background: var(--red); color: #2a0a0a; }
+
+  #saveMsg { font-size: 12px; color: var(--teal); margin-left: 8px; }
+  .muted { color: var(--muted); font-size: 12px; }
+</style>
+</head>
+<body>
+
+<div id="loginScreen">
+  <div class="login-box">
+    <h1>Panel de Administrador</h1>
+    <p>VOXA — Acceso restringido</p>
+    <input type="email" id="adminEmail" placeholder="Correo de administrador" autocomplete="username">
+    <input type="password" id="adminPassword" placeholder="Contraseña" autocomplete="current-password">
+    <button id="adminLoginBtn" type="button">Entrar</button>
+    <div id="loginError"></div>
+  </div>
+</div>
+
+<div id="dashboard">
+  <header class="topbar">
+    <h1>VOXA · Administrador</h1>
+    <span id="statusPill" class="status-pill status-online">Sistema en línea</span>
+  </header>
+
+  <div class="cards-grid">
+    <div class="stat-card"><div class="num" id="statTotalUsers">—</div><div class="label">Usuarios registrados</div></div>
+    <div class="stat-card"><div class="num" id="statActiveSubs">—</div><div class="label">Suscripciones activas</div></div>
+    <div class="stat-card"><div class="num" id="statErrors24h">—</div><div class="label">Errores (24h)</div></div>
+    <div class="stat-card"><div class="num" id="statByPlan">—</div><div class="label">Usuarios por plan</div></div>
+  </div>
+
+  <section>
+    <h2>Control del sistema</h2>
+    <p class="muted">Enciende, apaga o pon en mantenimiento la plataforma para todos los usuarios.</p>
+    <button class="toggle-btn" id="btnToggleOnline" type="button">Cargando…</button>
+    <button class="toggle-btn" id="btnToggleMaintenance" type="button">Cargando…</button>
+  </section>
+
+  <section>
+    <h2>Precios y planes</h2>
+    <div id="plansContainer">Cargando planes…</div>
+    <span id="saveMsg"></span>
+  </section>
+
+  <section>
+    <h2>Usuarios recientes</h2>
+    <table id="usersTable">
+      <thead><tr><th>Podcast</th><th>Correo</th><th>Plan</th><th>Estado</th><th>Registrado</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>Errores recientes del sistema</h2>
+    <table id="errorsTable">
+      <thead><tr><th>Origen</th><th>Mensaje</th><th>Fecha</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>Actividad reciente de administrador</h2>
+    <table id="activityTable">
+      <thead><tr><th>Acción</th><th>Detalles</th><th>Fecha</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </section>
+</div>
+
+<script>
+let ADMIN_TOKEN = null;
+
+async function api(path, opts = {}) {
+  const headers = opts.headers || {};
+  if (ADMIN_TOKEN) headers["Authorization"] = "Bearer " + ADMIN_TOKEN;
+  if (opts.body) headers["Content-Type"] = "application/json";
+  const res = await fetch(path, { ...opts, headers });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.error || "Error de red");
+  return data;
+}
+
+document.getElementById("adminLoginBtn").addEventListener("click", async () => {
+  const email = document.getElementById("adminEmail").value.trim();
+  const password = document.getElementById("adminPassword").value;
+  const errEl = document.getElementById("loginError");
+  const btn = document.getElementById("adminLoginBtn");
+  errEl.textContent = "";
+  if (!email || !password) { errEl.textContent = "Ingresa correo y contraseña"; return; }
+  btn.disabled = true; btn.textContent = "Verificando…";
+  try {
+    const data = await api("/api/admin/login", { method: "POST", body: JSON.stringify({ email, password }) });
+    ADMIN_TOKEN = data.token;
+    document.getElementById("loginScreen").style.display = "none";
+    document.getElementById("dashboard").style.display = "block";
+    await loadOverview();
+  } catch (e) {
+    errEl.textContent = e.message || "Acceso denegado";
+  } finally {
+    btn.disabled = false; btn.textContent = "Entrar";
+  }
+});
+
+function fmtDate(iso) {
+  try { return new Date(iso).toLocaleString("es-MX"); } catch { return iso; }
+}
+
+async function loadOverview() {
+  const data = await api("/api/admin/overview");
+
+  document.getElementById("statTotalUsers").textContent = data.totalUsers ?? 0;
+  document.getElementById("statActiveSubs").textContent = data.activeSubs ?? 0;
+  document.getElementById("statErrors24h").textContent = data.errorCount24h ?? 0;
+  const byPlanStr = (data.byPlan || []).map(p => `${p.plan}: ${p.count}`).join(" · ") || "—";
+  document.getElementById("statByPlan").textContent = byPlanStr;
+
+  const online = data.settings?.system_online !== "false";
+  const maintenance = data.settings?.maintenance_mode === "true";
+  const pill = document.getElementById("statusPill");
+  pill.textContent = maintenance ? "En mantenimiento" : (online ? "Sistema en línea" : "Sistema apagado");
+  pill.className = "status-pill " + (maintenance || !online ? "status-maintenance" : "status-online");
+
+  const btnOnline = document.getElementById("btnToggleOnline");
+  btnOnline.textContent = online ? "Apagar sistema" : "Encender sistema";
+  btnOnline.className = "toggle-btn " + (online ? "danger" : "active-on");
+  btnOnline.onclick = async () => {
+    await api("/api/admin/system-toggle", { method: "POST", body: JSON.stringify({ key: "system_online", value: !online }) });
+    await loadOverview();
+  };
+
+  const btnMaint = document.getElementById("btnToggleMaintenance");
+  btnMaint.textContent = maintenance ? "Desactivar mantenimiento" : "Activar mantenimiento";
+  btnMaint.className = "toggle-btn " + (maintenance ? "active-off" : "");
+  btnMaint.onclick = async () => {
+    await api("/api/admin/system-toggle", { method: "POST", body: JSON.stringify({ key: "maintenance_mode", value: !maintenance }) });
+    await loadOverview();
+  };
+
+  renderPlans(data.plans || []);
+  renderErrors(data.recentErrors || []);
+  renderActivity(data.recentActivity || []);
+  await loadUsers();
+}
+
+function renderPlans(plans) {
+  const container = document.getElementById("plansContainer");
+  container.innerHTML = "";
+  plans.forEach(plan => {
+    const row = document.createElement("div");
+    row.className = "plan-row";
+    row.innerHTML = `
+      <span class="plan-name">${plan.name}</span>
+      <span class="muted">$</span>
+      <input type="number" step="0.01" value="${(plan.price_cents / 100).toFixed(2)}" data-slug="${plan.slug}" class="price-input">
+      <span class="muted">/mes</span>
+      <button type="button" class="save-price-btn" data-slug="${plan.slug}">Guardar precio</button>
+      <button type="button" class="toggle-btn ${plan.active ? '' : 'danger'}" data-slug="${plan.slug}" data-active="${plan.active}">
+        ${plan.active ? "Activo" : "Desactivado"}
+      </button>
+    `;
+    container.appendChild(row);
+  });
+
+  container.querySelectorAll(".save-price-btn").forEach(btn => {
+    btn.addEventListener("click", async () => {
+      const slug = btn.dataset.slug;
+      const input = container.querySelector(`.price-input[data-slug="${slug}"]`);
+      const priceCents = Math.round(parseFloat(input.value) * 100);
+      const msg = document.getElementById("saveMsg");
+      try {
+        await api("/api/admin/update-plan", { method: "POST", body: JSON.stringify({ planSlug: slug, priceCents }) });
+        msg.textContent = "Precio actualizado ✓";
+        setTimeout(() => msg.textContent = "", 2500);
+      } catch (e) {
+        msg.textContent = "Error: " + e.message;
+      }
+    });
+  });
+
+  container.querySelectorAll(".toggle-btn[data-slug]").forEach(btn => {
+    btn.addEventListener("click", async () => {
+      const slug = btn.dataset.slug;
+      const isActive = btn.dataset.active === "true";
+      await api("/api/admin/update-plan", { method: "POST", body: JSON.stringify({ planSlug: slug, active: !isActive }) });
+      await loadOverview();
+    });
+  });
+}
+
+async function loadUsers() {
+  const data = await api("/api/admin/users");
+  const tbody = document.querySelector("#usersTable tbody");
+  tbody.innerHTML = "";
+  (data.users || []).forEach(u => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `<td>${u.podcast_name}</td><td>${u.email}</td><td>${u.plan}</td><td>${u.subscription_status}</td><td>${fmtDate(u.created_at)}</td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+function renderErrors(errors) {
+  const tbody = document.querySelector("#errorsTable tbody");
+  tbody.innerHTML = "";
+  errors.forEach(e => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `<td>${e.source}</td><td>${e.message}</td><td>${fmtDate(e.created_at)}</td>`;
+    tbody.appendChild(tr);
+  });
+  if (errors.length === 0) tbody.innerHTML = "<tr><td colspan=3 class='muted'>Sin errores recientes</td></tr>";
+}
+
+function renderActivity(activity) {
+  const tbody = document.querySelector("#activityTable tbody");
+  tbody.innerHTML = "";
+  activity.forEach(a => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `<td>${a.action}</td><td>${JSON.stringify(a.details)}</td><td>${fmtDate(a.created_at)}</td>`;
+    tbody.appendChild(tr);
+  });
+  if (activity.length === 0) tbody.innerHTML = "<tr><td colspan=3 class='muted'>Sin actividad registrada</td></tr>";
+}
+
+document.getElementById("adminPassword").addEventListener("keydown", (e) => {
+  if (e.key === "Enter") document.getElementById("adminLoginBtn").click();
+});
+</script>
+</body>
+</html>
