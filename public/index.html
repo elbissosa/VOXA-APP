@@ -1386,7 +1386,7 @@
       </div>
     </div>
     <div class="topbar-right">
-      <button class="btn-secondary" id="changePlanBtn" style="width:auto; padding:6px 12px; font-size:12px;">🔄 Cambiar plan</button>
+      <button class="btn-secondary" id="changePlanBtn" style="width:auto; padding:6px 12px; font-size:12px; display:none;">🔄 Cambiar plan</button>
       <div class="practice-badge" id="practiceBadge">🎯 MODO PRÁCTICA — no se guarda ni transmite</div>
       <div class="participants-count" id="participantsCount">5 lugares</div>
       <div id="timer">00:00:00</div>
@@ -2540,19 +2540,11 @@ document.getElementById('qrCloseBtn').addEventListener('click', () => {
       brandPodcastName.textContent = podcastName;
 
       // Si ya tiene una suscripción activa, entra directo a la app en vez de mostrar los planes otra vez
-      if(data.user.subscription_status === 'active' && data.user.plan){
-        authStep1.style.display = 'none';
-        authStep2.style.display = 'none';
-        document.getElementById('authCover').style.display = 'none';
-        appRoot.style.display = 'block';
-        if(typeof applyPlanRestrictions === 'function'){
-          applyPlanRestrictions(planSlugToDisplayName(data.user.plan));
-        }
-      } else {
-        authStep1.style.display = 'none';
-        authStep2.style.display = 'block';
-        document.getElementById('authBox').classList.add('wide');
-      }
+      // VOXA es gratis: siempre entra directo a la app con acceso completo
+      authStep1.style.display = 'none';
+      authStep2.style.display = 'none';
+      document.getElementById('authCover').style.display = 'none';
+      appRoot.style.display = 'block';
     } catch (err) {
       authError.textContent = 'Error de conexión, revisa tu internet e intenta de nuevo.';
     } finally {
