@@ -142,11 +142,18 @@
   .stage{
     background:
       radial-gradient(ellipse 600px 300px at 50% 0%, rgba(62,142,247,0.06), transparent 70%),
+      linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px),
       var(--bg);
+    background-size: auto, 32px 32px, 32px 32px, auto;
     padding:20px;
     display:flex;
     flex-direction:column;
     gap:16px;
+  }
+  @media (min-width: 1400px){
+    .stage{ padding:28px 40px; }
+    .camera-grid{ max-width:1400px; margin:0 auto; width:100%; }
   }
 
   .stage-header{
@@ -331,6 +338,13 @@
     font-family:'Oswald', sans-serif;
     font-size:18px;
     color: var(--muted);
+    box-shadow: 0 0 0 6px rgba(255,255,255,0.02);
+  }
+  .camera-grid[data-count="1"] .avatar-ring{
+    width:88px; height:88px; font-size:26px;
+  }
+  .camera-grid[data-count="1"] .tile-placeholder{
+    font-size:14px; gap:14px;
   }
   .tile.speaking .avatar-ring{
     border-color: var(--on-air);
@@ -1878,6 +1892,14 @@ const timerEl = document.getElementById('timer');
 const downloadBtn = document.getElementById('downloadBtn');
 
 recordBtn.addEventListener('click', () => {
+  if(!recording){
+    const anyCamOn = Object.values(camState).some(s => s === 'on');
+    const anyDestOn = document.querySelectorAll('[data-dest].on').length > 0;
+    if(!anyCamOn && !anyDestOn){
+      showUpgradeToast('Conecta al menos una cámara o un servicio de transmisión antes de grabar');
+      return;
+    }
+  }
   recording = !recording;
   if(recording){
     recordBtn.classList.add('recording');
