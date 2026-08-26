@@ -212,6 +212,22 @@
     justify-content:center;
     box-shadow: 0 6px 18px rgba(0,0,0,0.4), inset 0 0 0 1px rgba(255,255,255,0.02);
   }
+  .tile::before{
+    content:'';
+    position:absolute;
+    inset:8px;
+    pointer-events:none;
+    z-index:2;
+    background-image:
+      linear-gradient(var(--line) 2px, transparent 2px), linear-gradient(90deg, var(--line) 2px, transparent 2px),
+      linear-gradient(var(--line) 2px, transparent 2px), linear-gradient(90deg, var(--line) 2px, transparent 2px);
+    background-position: top left, top left, bottom right, bottom right;
+    background-size: 14px 14px;
+    background-repeat: no-repeat;
+    opacity:0.5;
+    transition: opacity 0.25s ease;
+  }
+  .tile.speaking::before{ opacity:0.9; }
   .tile::after{
     content:'';
     position:absolute;
@@ -411,6 +427,25 @@
   .btn-record:hover{ background: linear-gradient(180deg, #FF6478, #F04D62); box-shadow: 0 4px 22px rgba(232,56,79,0.5); }
   .btn-record:active{ transform: scale(0.98); }
   .btn-record.recording{ background: var(--panel-raised); border:1px solid var(--on-air); color: var(--on-air); box-shadow: 0 0 18px rgba(232,56,79,0.3); }
+
+  .btn-icon-subtle{
+    width:34px; height:34px;
+    border-radius:50%;
+    border:1px solid var(--line);
+    background: var(--panel-raised);
+    color: var(--muted);
+    font-size:15px;
+    cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    transition: all 0.2s ease;
+    opacity:0.7;
+  }
+  .btn-icon-subtle:hover{
+    opacity:1;
+    border-color: var(--glow-blue);
+    box-shadow: 0 0 12px rgba(62,142,247,0.3);
+    color: var(--text);
+  }
 
   .btn-secondary{
     width:100%;
@@ -1515,8 +1550,8 @@
           </div>
         </div>
         <div style="height:10px;"></div>
-        <div id="panelPhoneQR">
-          <button class="btn-secondary" id="addPhoneCamBtn">📱 Conectar cámara de teléfono (QR)</button>
+        <div id="panelPhoneQR" style="display:flex; justify-content:flex-end;">
+          <button class="btn-icon-subtle" id="addPhoneCamBtn" title="Conectar cámara de teléfono">📱</button>
           <div id="phoneCamList" style="display:flex; flex-direction:column; gap:6px; margin-top:8px;"></div>
         </div>
       </div>
