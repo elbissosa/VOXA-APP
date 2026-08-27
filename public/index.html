@@ -436,18 +436,44 @@
   }
   .studio-monitor{
     position:absolute;
-    top:16%; right:9%;
-    width:64px; height:44px;
-    border-radius:4px;
+    top:12%; right:7%;
+    width:120px; height:80px;
+    border-radius:6px;
     background: linear-gradient(160deg, #0B1A18, #05100E);
-    border:1px solid rgba(45,212,191,0.4);
+    border:1px solid rgba(45,212,191,0.45);
     display:flex; align-items:center; justify-content:center;
     font-family:'Oswald', sans-serif;
-    font-size:11px;
-    letter-spacing:1.5px;
+    font-size:20px;
+    font-weight:600;
+    letter-spacing:2px;
     color: var(--live-teal);
-    text-shadow: 0 0 8px rgba(45,212,191,0.8);
-    box-shadow: 0 0 18px rgba(45,212,191,0.25);
+    text-shadow: 0 0 10px rgba(45,212,191,0.85);
+    box-shadow: 0 0 24px rgba(45,212,191,0.3), inset 0 0 20px rgba(45,212,191,0.08);
+  }
+  .studio-beam{
+    position:absolute;
+    width:2px; height:46%;
+    top:0;
+    background: linear-gradient(180deg, rgba(45,212,191,0.55), transparent);
+    filter: blur(1px);
+  }
+  .studio-beam.b1{ left:18%; transform: rotate(8deg); }
+  .studio-beam.b2{ left:32%; transform: rotate(3deg); }
+  .studio-beam.b3{ right:26%; transform: rotate(-5deg); background: linear-gradient(180deg, rgba(232,56,79,0.4), transparent); }
+  .studio-floor-glow{
+    position:absolute;
+    left:0; right:0; bottom:0;
+    height:34%;
+    background: radial-gradient(ellipse at 50% 100%, rgba(45,212,191,0.16), transparent 70%);
+  }
+  .studio-podium{
+    position:absolute;
+    bottom:16%; left:50%;
+    transform:translateX(-50%);
+    width:200px; height:26px;
+    border-radius:50%;
+    border:1px solid rgba(45,212,191,0.35);
+    box-shadow: 0 0 20px rgba(45,212,191,0.2);
   }
   .studio-rings{
     position:absolute;
@@ -473,8 +499,8 @@
   .studio-logo-glow{
     position:relative;
     z-index:1;
-    height:64px;
-    filter: drop-shadow(0 0 22px rgba(232,56,79,0.55)) drop-shadow(0 0 40px rgba(45,212,191,0.35));
+    height:84px;
+    filter: drop-shadow(0 0 26px rgba(232,56,79,0.6)) drop-shadow(0 0 46px rgba(45,212,191,0.4));
   }
   .tile.cam-error{ border-color: var(--amber) !important; }
   .tile.cam-error::after{
@@ -1983,7 +2009,7 @@ function buildTiles(){
 
       const mainPlaceholder = document.createElement('div');
       mainPlaceholder.className = 'tile-placeholder main-tile-placeholder';
-      mainPlaceholder.innerHTML = `<div class="studio-monitor">VOXA</div><div class="studio-rings"></div><img class="studio-logo-glow" src="logo.png" alt="VOXA"><span>Sin conectar</span>`;
+      mainPlaceholder.innerHTML = `<div class="studio-floor-glow"></div><div class="studio-beam b1"></div><div class="studio-beam b2"></div><div class="studio-beam b3"></div><div class="studio-podium"></div><div class="studio-monitor">VOXA</div><div class="studio-rings"></div><img class="studio-logo-glow" src="logo.png" alt="VOXA"><span>Sin conectar</span>`;
       tile.appendChild(mainPlaceholder);
     } else {
       const placeholder = document.createElement('div');
