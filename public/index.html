@@ -131,12 +131,94 @@
   .main{
     flex:1;
     display:grid;
-    grid-template-columns: 1fr 300px;
+    grid-template-columns: 210px 1fr;
     gap:1px;
     background: var(--line);
   }
   @media (max-width: 880px){
     .main{ grid-template-columns: 1fr; }
+  }
+
+  /* ===== SIDEBAR NAV (dashboard) ===== */
+  .sidebar-nav{
+    background: linear-gradient(180deg, #14171E, #0F1116);
+    border-right:1px solid var(--line);
+    display:flex;
+    flex-direction:column;
+    padding:14px 10px;
+    gap:2px;
+    overflow-y:auto;
+  }
+  .sidebar-nav-item{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:10px 12px;
+    border-radius:10px;
+    color: var(--muted);
+    font-size:13px;
+    letter-spacing:0.3px;
+    cursor:pointer;
+    border:1px solid transparent;
+    background:transparent;
+    text-align:left;
+    width:100%;
+    font-family:'Inter', sans-serif;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+  }
+  .sidebar-nav-item .nav-ico{ font-size:15px; width:18px; text-align:center; }
+  .sidebar-nav-item:hover{ background: rgba(255,255,255,0.04); color: var(--text); }
+  .sidebar-nav-item.active{
+    background: rgba(62,142,247,0.12);
+    border-color: rgba(62,142,247,0.35);
+    color: var(--text);
+    box-shadow: inset 0 0 0 1px rgba(62,142,247,0.15);
+  }
+  @media (max-width: 880px){
+    .sidebar-nav{
+      flex-direction:row;
+      overflow-x:auto;
+      overflow-y:hidden;
+      border-right:none;
+      border-bottom:1px solid var(--line);
+      padding:8px;
+    }
+    .sidebar-nav-item{ flex:0 0 auto; white-space:nowrap; }
+  }
+
+  .dashboard-content{
+    display:flex;
+    flex-direction:column;
+    min-width:0;
+    background: var(--line);
+    gap:1px;
+  }
+
+  /* ===== PANEL AS CARD GRID ===== */
+  .panel{
+    background: transparent;
+    padding:20px;
+    display:grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap:16px;
+    align-content:start;
+    overflow-y:visible;
+    border-left:none;
+  }
+  .panel > div{
+    background: linear-gradient(180deg, #14171E, #0F1116);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:16px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+  }
+  .panel > div.card-hidden{ display:none; }
+  .panel > .footnote{
+    grid-column: 1 / -1;
+    background:transparent;
+    border:none;
+    box-shadow:none;
+    padding:6px 4px;
   }
 
   .stage{
@@ -241,6 +323,9 @@
     transform:scaleX(-1);
     background:#0F1114;
   }
+  .tile.main-tile.cam-off video{ display:none; }
+  .main-tile-placeholder{ display:none; }
+  .tile.main-tile.cam-off .main-tile-placeholder{ display:flex; }
   .tile.speaking{
     border-color: var(--on-air);
     box-shadow: 0 0 0 1px var(--on-air), 0 0 28px rgba(232,56,79,0.45), inset 0 0 24px rgba(232,56,79,0.08);
@@ -322,6 +407,46 @@
 
   .tile.cam-off video{ opacity:0.15; filter: grayscale(1); }
   .tile.cam-off .tile-placeholder{ opacity:0.5; }
+  .tile.main-tile.cam-off{
+    background:
+      radial-gradient(circle at 50% 42%, rgba(62,142,247,0.16), transparent 55%),
+      radial-gradient(circle at 50% 42%, rgba(232,56,79,0.10), transparent 70%),
+      linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px),
+      linear-gradient(160deg, #12151C, #06070A);
+    background-size: auto, 28px 28px, 28px 28px, auto;
+  }
+  .tile.main-tile.cam-off .tile-placeholder{
+    position:relative;
+    opacity:1;
+  }
+  .studio-rings{
+    position:absolute;
+    width:220px; height:220px;
+    border-radius:50%;
+    border:1px solid rgba(62,142,247,0.35);
+    top:50%; left:50%;
+    transform:translate(-50%,-50%);
+    animation: studioPulse 3s ease-in-out infinite;
+  }
+  .studio-rings::before, .studio-rings::after{
+    content:'';
+    position:absolute;
+    inset:30px;
+    border-radius:50%;
+    border:1px solid rgba(232,56,79,0.3);
+  }
+  .studio-rings::after{ inset:60px; border-color: rgba(45,212,191,0.3); }
+  @keyframes studioPulse{
+    0%,100%{ opacity:0.5; }
+    50%{ opacity:1; }
+  }
+  .studio-logo-glow{
+    position:relative;
+    z-index:1;
+    height:64px;
+    filter: drop-shadow(0 0 22px rgba(232,56,79,0.55)) drop-shadow(0 0 40px rgba(62,142,247,0.3));
+  }
   .tile.cam-error{ border-color: var(--amber) !important; }
   .tile.cam-error::after{
     content:'⚠ SIN SEÑAL';
@@ -1448,7 +1573,20 @@
 
   <div class="main">
 
-    <div class="stage">
+    <div class="sidebar-nav" id="sidebarNav">
+      <button class="sidebar-nav-item active" data-navtarget="stageTop"><span class="nav-ico">🏠</span>Dashboard</button>
+      <button class="sidebar-nav-item" data-navtarget="panelStream"><span class="nav-ico">📡</span>Transmisión</button>
+      <button class="sidebar-nav-item" data-navtarget="panelPoll"><span class="nav-ico">📊</span>Encuesta</button>
+      <button class="sidebar-nav-item" data-navtarget="panelAIInterview"><span class="nav-ico">🤖</span>Entrevista IA</button>
+      <button class="sidebar-nav-item" data-navtarget="panelChat"><span class="nav-ico">💬</span>Chat en vivo</button>
+      <button class="sidebar-nav-item" data-navtarget="panelReplay"><span class="nav-ico">🔁</span>Repeticiones</button>
+      <button class="sidebar-nav-item" data-navaction="stats"><span class="nav-ico">📈</span>Estadísticas</button>
+      <button class="sidebar-nav-item" data-navtarget="panelVideoPro"><span class="nav-ico">⚙️</span>Configuración</button>
+    </div>
+
+    <div class="dashboard-content">
+
+    <div class="stage" id="stageTop">
       <div class="stage-header">
         <div class="stage-title">Cámaras en vivo</div>
         <div class="layout-mode" id="layoutModeLabel">Modo: cuadrícula automática</div>
@@ -1556,7 +1694,7 @@
         </div>
       </div>
 
-      <div>
+      <div id="panelStream">
         <div class="panel-section-title">Transmitir en vivo</div>
         <div class="destination-list">
           <div class="destination">
@@ -1715,6 +1853,8 @@
 
     </div>
 
+    </div>
+
   </div>
 </div>
 
@@ -1790,7 +1930,7 @@ function buildTiles(){
 
   for(let i = 0; i < slotCount; i++){
     const tile = document.createElement('div');
-    tile.className = 'tile';
+    tile.className = i === 0 ? 'tile main-tile' : 'tile';
     tile.dataset.index = i;
 
     const tally = document.createElement('div');
@@ -1811,6 +1951,11 @@ function buildTiles(){
       video.autoplay = true; video.muted = true; video.playsInline = true;
       video.id = 'localVideo';
       tile.appendChild(video);
+
+      const mainPlaceholder = document.createElement('div');
+      mainPlaceholder.className = 'tile-placeholder main-tile-placeholder';
+      mainPlaceholder.innerHTML = `<div class="studio-rings"></div><img class="studio-logo-glow" src="logo.png" alt="VOXA"><span>Sin conectar</span>`;
+      tile.appendChild(mainPlaceholder);
     } else {
       const placeholder = document.createElement('div');
       placeholder.className = 'tile-placeholder';
@@ -2377,6 +2522,23 @@ document.getElementById('statsBtn').addEventListener('click', () => {
 });
 document.getElementById('statsCloseBtn').addEventListener('click', () => statsOverlay.classList.remove('show'));
 statsOverlay.addEventListener('click', (e) => { if(e.target === statsOverlay) statsOverlay.classList.remove('show'); });
+
+// ===== Navegación lateral tipo dashboard =====
+document.querySelectorAll('.sidebar-nav-item').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.sidebar-nav-item').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const action = btn.getAttribute('data-navaction');
+    if (action === 'stats') {
+      const sb = document.getElementById('statsBtn');
+      if (sb) sb.click();
+      return;
+    }
+    const targetId = btn.getAttribute('data-navtarget');
+    const el = targetId && document.getElementById(targetId);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+});
 
 // ===== Notificación automática a redes al empezar transmisión =====
 const goLiveToast = document.getElementById('goLiveToast');
