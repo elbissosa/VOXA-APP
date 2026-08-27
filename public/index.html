@@ -187,11 +187,36 @@
   }
 
   .dashboard-content{
-    display:flex;
-    flex-direction:column;
+    display:grid;
+    grid-template-columns: 1fr 300px;
+    grid-template-rows: auto 1fr;
     min-width:0;
     background: var(--line);
     gap:1px;
+  }
+  .dashboard-content .stage{ grid-column: 1; grid-row: 1; }
+  .dashboard-content .panel{ grid-column: 2; grid-row: 1; grid-template-columns: 1fr; align-content:start; }
+  .dashboard-content .panel-secondary{
+    grid-column: 1 / -1;
+    grid-row: 2;
+    background: transparent;
+    padding:0 20px 20px;
+    display:grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap:16px;
+  }
+  .dashboard-content .panel-secondary > div{
+    background: linear-gradient(180deg, #14171E, #0F1116);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:16px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+  }
+  @media (max-width: 1150px){
+    .dashboard-content{ grid-template-columns: 1fr; grid-template-rows: auto auto auto; }
+    .dashboard-content .stage{ grid-column: 1; grid-row: 1; }
+    .dashboard-content .panel{ grid-column: 1; grid-row: 2; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+    .dashboard-content .panel-secondary{ grid-row: 3; }
   }
 
   /* ===== PANEL AS CARD GRID ===== */
@@ -1687,6 +1712,10 @@
         <div style="height:8px;"></div>
         <button class="btn-secondary" id="statsBtn">📈 Ver estadísticas del episodio</button>
       </div>
+
+    </div>
+
+    <div class="panel-secondary">
 
       <div id="panelTeleprompter">
         <div class="panel-section-title">Apuntador de preguntas</div>
