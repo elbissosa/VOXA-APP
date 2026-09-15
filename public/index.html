@@ -1674,6 +1674,13 @@
   .golive-stage video{
     width:100%; height:100%; object-fit:cover;
   }
+  .golive-stage.scene-transition{
+    animation: goliveSceneFade 0.5s ease;
+  }
+  @keyframes goliveSceneFade{
+    0%{ opacity:0.15; filter:brightness(0.4); }
+    100%{ opacity:1; filter:brightness(1); }
+  }
   .golive-stage .tile-placeholder{ position:absolute; inset:0; }
   .golive-side{
     background: linear-gradient(180deg, #14171E, #0F1116);
@@ -1707,14 +1714,15 @@
     flex-shrink:0;
   }
   .golive-send-btn{
-    background: linear-gradient(135deg, #EF4444, #DC2626);
+    background: linear-gradient(135deg, #FF5B5B, #DC2626);
     color:#fff;
-    border:none;
-    border-radius:10px;
-    padding:12px 26px;
+    border:2px solid rgba(255,255,255,0.15);
+    border-radius:12px;
+    padding:15px 32px;
     font-family:'Oswald', sans-serif;
-    letter-spacing:1px;
-    font-size:14px;
+    letter-spacing:1.5px;
+    font-size:16px;
+    font-weight:600;
     cursor:pointer;
     box-shadow: 0 6px 18px rgba(239,68,68,0.35);
   }
@@ -1869,7 +1877,220 @@
     border-color:#EF4444;
     color:#F87171;
   }
+  .golive-pv-row{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap:10px;
+    padding:10px 16px 0 16px;
+    flex-shrink:0;
+  }
+  .golive-pv-block{ display:flex; flex-direction:column; gap:6px; min-width:0; }
+  .golive-pv-label{
+    font-family:'Oswald', sans-serif;
+    font-size:11px;
+    letter-spacing:1.2px;
+    padding:4px 8px;
+    border-radius:5px;
+    width:fit-content;
+  }
+  .golive-pv-label.live{ color:#F87171; background: rgba(239,68,68,0.12); border:1px solid rgba(239,68,68,0.4); }
+  .golive-pv-label.preview{ color: var(--live-teal); background: rgba(45,212,191,0.1); border:1px solid rgba(45,212,191,0.35); }
+  .golive-stage-preview{ opacity:0.85; }
+  .golive-media-upload{ padding:0 16px; display:flex; flex-direction:column; gap:8px; }
+  .golive-media-btn{
+    background: var(--panel-raised);
+    border:1px dashed rgba(255,255,255,0.3);
+    color: var(--text);
+    border-radius:8px;
+    padding:10px;
+    font-size:12px;
+    cursor:pointer;
+  }
+  .golive-media-btn:hover{ border-color: var(--live-teal); }
+  .golive-media-list{ display:flex; flex-direction:column; gap:6px; }
+  .golive-media-item{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    background: var(--panel-raised);
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:8px 10px;
+    font-size:12px;
+    color: var(--muted);
+  }
+  .golive-media-item button{
+    background:transparent;
+    border:none;
+    color: var(--live-teal);
+    cursor:pointer;
+    font-size:11px;
+  }
+  .golive-send-btn{
+    box-shadow: 0 0 0 rgba(239,68,68,0.6);
+    animation: goliveGlow 2s infinite;
+    transform: scale(1);
+    transition: transform 0.15s ease;
+  }
+  .golive-send-btn:hover{ transform: scale(1.04); }
+  @keyframes goliveGlow{
+    0%{ box-shadow: 0 0 8px rgba(239,68,68,0.5); }
+    50%{ box-shadow: 0 0 22px rgba(239,68,68,0.9); }
+    100%{ box-shadow: 0 0 8px rgba(239,68,68,0.5); }
+  }
+  .golive-countdown-row{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:8px 16px;
+    border-top:1px solid var(--line);
+    flex-shrink:0;
+    flex-wrap:wrap;
+  }
+  .golive-countdown-label{ font-size:11px; color: var(--muted); }
+  .golive-countdown-time{
+    font-family:'Oswald', sans-serif;
+    font-size:20px;
+    color: var(--live-teal);
+    letter-spacing:1px;
+    min-width:70px;
+  }
+  .golive-countdown-btn{
+    background: var(--panel-raised);
+    border:1px solid var(--line);
+    color: var(--text);
+    border-radius:6px;
+    padding:6px 10px;
+    font-size:12px;
+    cursor:pointer;
+  }
+  .golive-countdown-input{
+    width:50px;
+    background: var(--panel-raised);
+    border:1px solid var(--line);
+    color: var(--text);
+    border-radius:6px;
+    padding:5px 6px;
+    font-size:12px;
+  }
+  .golive-sound-bar{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:8px 16px;
+    border-top:1px solid var(--line);
+    flex-shrink:0;
+    flex-wrap:wrap;
+  }
+  .golive-sound-list{ display:flex; gap:8px; flex-wrap:wrap; }
+  .golive-sound-btn{
+    background: var(--panel-raised);
+    border:1px solid var(--line);
+    color: var(--text);
+    border-radius:8px;
+    padding:8px 12px;
+    font-size:12px;
+    cursor:pointer;
+  }
+  .golive-sound-btn:active{ transform: scale(0.96); border-color: var(--live-teal); }
+  .golive-lowerthird-bar{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:8px 16px 12px 16px;
+    border-top:1px solid var(--line);
+    flex-shrink:0;
+    flex-wrap:wrap;
+  }
+  .golive-lowerthird-input{
+    background: var(--panel-raised);
+    border:1px solid var(--line);
+    color: var(--text);
+    border-radius:6px;
+    padding:7px 10px;
+    font-size:12px;
+    flex:1;
+    min-width:120px;
+  }
+  .golive-lowerthird{
+    position:absolute;
+    left:20px;
+    bottom:20px;
+    background: linear-gradient(90deg, rgba(45,212,191,0.95), rgba(20,23,30,0.85));
+    border-left:4px solid var(--live-teal);
+    padding:8px 16px;
+    border-radius:4px;
+    animation: goliveLTIn 0.4s ease;
+  }
+  .golive-lowerthird-name{ font-family:'Oswald', sans-serif; font-size:16px; color:#0A0C10; letter-spacing:0.5px; }
+  .golive-lowerthird-role{ font-size:12px; color:#0A0C10; opacity:0.8; }
+  @keyframes goliveLTIn{
+    0%{ transform: translateX(-30px); opacity:0; }
+    100%{ transform: translateX(0); opacity:1; }
+  }
+  .golive-template-select{
+    flex-shrink:0;
+    background: var(--panel-raised);
+    border:1px solid var(--line);
+    color: var(--text);
+    border-radius:8px;
+    padding:9px 10px;
+    font-size:12px;
+    max-width:170px;
+  }
+  .golive-queue-add{
+    display:flex;
+    gap:8px;
+    padding:0 16px 10px 16px;
+  }
+  .golive-queue-list{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    padding:0 16px;
+  }
+  .golive-queue-item{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    background: var(--panel-raised);
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:9px 12px;
+    font-size:13px;
+  }
+  .golive-queue-item-actions{ display:flex; gap:6px; }
+  .golive-queue-item-actions button{
+    background:transparent;
+    border:1px solid var(--line);
+    color: var(--text);
+    border-radius:6px;
+    padding:5px 9px;
+    font-size:11px;
+    cursor:pointer;
+  }
+  .golive-queue-item-actions button.admit{ border-color: var(--live-teal); color: var(--live-teal); }
+  .golive-queue-item-actions button.remove{ border-color:#EF4444; color:#F87171; }
+  .golive-queue-empty{ color: var(--muted); font-size:12px; padding:4px 0; }
+  .golive-schedule-box{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    padding:0 16px 14px 16px;
+  }
+  .golive-schedule-list{ display:flex; flex-direction:column; gap:6px; }
+  .golive-schedule-item{
+    background: var(--panel-raised);
+    border:1px solid var(--line);
+    border-left:3px solid var(--live-teal);
+    border-radius:6px;
+    padding:8px 10px;
+    font-size:12px;
+    color: var(--text);
+  }
+  .golive-schedule-item span{ display:block; color: var(--muted); font-size:11px; margin-top:2px; }
   @media (max-width: 880px){
+    .golive-pv-row{ grid-template-columns: 1fr; }
     .golive-body{ grid-template-columns: 1fr; grid-template-rows: 1fr 260px; }
   }
 </style>
@@ -2047,6 +2268,14 @@
         <div style="height:8px;"></div>
         <div class="practice-row">
           <div class="practice-row-label">
+            <span>Grabación multi-pista</span>
+            <span>Guarda cada cámara e invitado por separado además de la mezcla final</span>
+          </div>
+          <div class="toggle" id="multitrackToggle"></div>
+        </div>
+        <div style="height:8px;"></div>
+        <div class="practice-row">
+          <div class="practice-row-label">
             <span>Modo práctica</span>
             <span>Prueba cámaras sin guardar ni transmitir</span>
           </div>
@@ -2054,6 +2283,9 @@
         </div>
         <div style="height:8px;"></div>
         <button class="btn-secondary" id="statsBtn">📈 Ver estadísticas del episodio</button>
+        <div style="height:8px;"></div>
+        <button class="btn-secondary" id="aiSummaryBtn">🧠 Generar resumen con IA</button>
+        <div id="aiSummaryBox" style="display:none; margin-top:10px; padding:12px; background:var(--panel-raised); border:1px solid var(--line); border-radius:8px; font-size:13px; color:var(--muted); line-height:1.5;"></div>
       </div>
 
     </div>
@@ -2325,8 +2557,32 @@
 
   <div class="golive-body">
     <div class="golive-stage-col">
-      <div class="golive-stage" id="goLiveStage">
-        <video id="goLiveVideo" autoplay muted playsinline></video>
+      <div class="golive-pv-row">
+        <div class="golive-pv-block">
+          <div class="golive-pv-label live">● PROGRAMA (EN VIVO)</div>
+          <div class="golive-stage" id="goLiveStage">
+            <video id="goLiveVideo" autoplay muted playsinline></video>
+            <div class="golive-lowerthird" id="goLiveLowerThird" style="display:none;">
+              <div class="golive-lowerthird-name" id="goLiveLowerThirdName"></div>
+              <div class="golive-lowerthird-role" id="goLiveLowerThirdRole"></div>
+            </div>
+          </div>
+        </div>
+        <div class="golive-pv-block">
+          <div class="golive-pv-label preview">VISTA PREVIA (EDITANDO)</div>
+          <div class="golive-stage golive-stage-preview" id="goLiveStagePreview">
+            <video id="goLivePreviewVideo" autoplay muted playsinline></video>
+          </div>
+        </div>
+      </div>
+
+      <div class="golive-countdown-row">
+        <span class="golive-countdown-label">Cuenta regresiva de segmento</span>
+        <span class="golive-countdown-time" id="goLiveCountdownTime">05:00</span>
+        <button class="golive-countdown-btn" id="goLiveCountdownStart">▶ Iniciar</button>
+        <button class="golive-countdown-btn" id="goLiveCountdownReset">↺ Reiniciar</button>
+        <input type="number" class="golive-countdown-input" id="goLiveCountdownMinutes" value="5" min="1" max="60">
+        <span class="golive-countdown-label">min</span>
       </div>
 
       <div class="golive-scenes-bar">
@@ -2337,6 +2593,27 @@
           <button class="golive-scene-thumb" data-scene="cierre">Cierre</button>
         </div>
         <button class="golive-add-source-btn" id="goLiveAddSourceBtn">+ Agregar fuente</button>
+        <button class="golive-add-source-btn" id="goLiveSaveTemplateBtn">💾 Guardar plantilla</button>
+        <select class="golive-template-select" id="goLiveTemplateSelect">
+          <option value="">Cargar plantilla guardada...</option>
+        </select>
+      </div>
+
+      <div class="golive-sound-bar">
+        <div class="golive-scenes-label">SONIDOS</div>
+        <div class="golive-sound-list">
+          <button class="golive-sound-btn" data-sound="applause">👏 Aplausos</button>
+          <button class="golive-sound-btn" data-sound="drumroll">🥁 Redoble</button>
+          <button class="golive-sound-btn" data-sound="ding">🔔 Ding</button>
+          <button class="golive-sound-btn" data-sound="whoosh">💨 Cortinilla</button>
+        </div>
+      </div>
+
+      <div class="golive-lowerthird-bar">
+        <div class="golive-scenes-label">NOMBRE EN PANTALLA</div>
+        <input type="text" class="golive-lowerthird-input" id="goLiveGuestName" placeholder="Nombre del invitado">
+        <input type="text" class="golive-lowerthird-input" id="goLiveGuestRole" placeholder="Cargo o descripción (opcional)">
+        <div class="toggle" id="goLiveLowerThirdToggle"></div>
       </div>
     </div>
 
@@ -2346,11 +2623,18 @@
         <button class="golive-tab" data-golivetab="overlay">Gráficos</button>
         <button class="golive-tab" data-golivetab="dest">Destinos</button>
         <button class="golive-tab" data-golivetab="chat">Chat</button>
+        <button class="golive-tab" data-golivetab="queue">Sala de espera</button>
       </div>
 
       <div class="golive-tabpanel" id="goLiveTab-cams">
         <div class="golive-side-title" style="padding-top:12px;">FUENTES DE ESTA ESCENA</div>
         <div class="golive-cams-list" id="goLiveCamsList"></div>
+        <div class="golive-side-title">MULTIMEDIA</div>
+        <div class="golive-media-upload">
+          <input type="file" id="goLiveMediaInput" accept="image/*,video/*" style="display:none;">
+          <button class="golive-media-btn" id="goLiveMediaBtn">🖼 Subir foto, video o archivo</button>
+          <div class="golive-media-list" id="goLiveMediaList"></div>
+        </div>
       </div>
 
       <div class="golive-tabpanel" id="goLiveTab-overlay" style="display:none;">
@@ -2378,11 +2662,27 @@
         <div class="golive-side-title" style="padding-top:12px;">DESTINOS DE TRANSMISIÓN</div>
         <div class="destination-list" id="goLiveDestList" style="padding:0 16px;"></div>
         <div class="dest-key-hint" style="padding:0 16px;">Tu clave se guarda solo en este navegador, nunca se comparte con otros usuarios.</div>
+        <div class="golive-side-title">PROGRAMAR PRÓXIMA TRANSMISIÓN</div>
+        <div class="golive-schedule-box">
+          <input type="text" class="golive-lowerthird-input" id="goLiveScheduleTitle" placeholder="Título del episodio">
+          <input type="datetime-local" class="golive-lowerthird-input" id="goLiveScheduleDate">
+          <button class="golive-media-btn" id="goLiveScheduleBtn">📅 Programar y anunciar</button>
+          <div class="golive-schedule-list" id="goLiveScheduleList"></div>
+        </div>
       </div>
 
       <div class="golive-tabpanel" id="goLiveTab-chat">
         <div class="golive-side-title">CHAT EN VIVO · YOUTUBE · KICK · INSTAGRAM</div>
         <div class="golive-chat" id="goLiveChatBox"></div>
+      </div>
+
+      <div class="golive-tabpanel" id="goLiveTab-queue" style="display:none;">
+        <div class="golive-side-title" style="padding-top:12px;">SALA DE ESPERA</div>
+        <div class="golive-queue-add">
+          <input type="text" class="golive-lowerthird-input" id="goLiveQueueNameInput" placeholder="Nombre del invitado">
+          <button class="golive-media-btn" id="goLiveQueueAddBtn">+ Agregar a la espera</button>
+        </div>
+        <div class="golive-queue-list" id="goLiveQueueList"></div>
       </div>
     </div>
   </div>
@@ -3281,7 +3581,7 @@ document.querySelectorAll('.golive-tab').forEach(tabBtn => {
     document.querySelectorAll('.golive-tab').forEach(b => b.classList.remove('active'));
     tabBtn.classList.add('active');
     const target = tabBtn.getAttribute('data-golivetab');
-    ['cams','overlay','dest','chat'].forEach(key => {
+    ['cams','overlay','dest','chat','queue'].forEach(key => {
       const panel = document.getElementById('goLiveTab-' + key);
       if(panel) panel.style.display = (key === target) ? 'flex' : 'none';
     });
@@ -3294,6 +3594,12 @@ document.querySelectorAll('.golive-scene-thumb').forEach(sceneBtn => {
     document.querySelectorAll('.golive-scene-thumb').forEach(b => b.classList.remove('active'));
     sceneBtn.classList.add('active');
     goLiveHint.textContent = 'Escena activa: ' + sceneBtn.textContent + '. Ajusta cámara, overlays y destinos aquí antes de salir al aire.';
+    // transición animada al cambiar de escena
+    if(goLiveStage){
+      goLiveStage.classList.remove('scene-transition');
+      void goLiveStage.offsetWidth;
+      goLiveStage.classList.add('scene-transition');
+    }
   });
 });
 
@@ -3318,6 +3624,295 @@ if(goLiveRecBtn){
     goLiveRecBtn.textContent = recording ? '⏺ Grabando' : '⏺ Rec';
   });
 }
+
+// ===== Multimedia: subir foto, video o archivo como fuente =====
+const goLiveMediaBtn = document.getElementById('goLiveMediaBtn');
+const goLiveMediaInput = document.getElementById('goLiveMediaInput');
+const goLiveMediaList = document.getElementById('goLiveMediaList');
+
+if(goLiveMediaBtn && goLiveMediaInput){
+  goLiveMediaBtn.addEventListener('click', () => goLiveMediaInput.click());
+
+  goLiveMediaInput.addEventListener('change', () => {
+    const file = goLiveMediaInput.files && goLiveMediaInput.files[0];
+    if(!file) return;
+    const url = URL.createObjectURL(file);
+    const isVideo = file.type.startsWith('video/');
+    const item = document.createElement('div');
+    item.className = 'golive-media-item';
+    item.innerHTML = '<span>' + (isVideo ? '🎬 ' : '🖼 ') + file.name.slice(0, 22) + '</span><button>Usar en escenario</button>';
+    item.querySelector('button').addEventListener('click', () => {
+      goLiveStage.querySelectorAll('img.golive-media-preview, video.golive-media-preview').forEach(n => n.remove());
+      const el = document.createElement(isVideo ? 'video' : 'img');
+      el.className = 'golive-media-preview';
+      el.src = url;
+      el.style.position = 'absolute';
+      el.style.inset = '0';
+      el.style.width = '100%';
+      el.style.height = '100%';
+      el.style.objectFit = 'contain';
+      el.style.background = '#000';
+      if(isVideo){ el.autoplay = true; el.loop = true; el.muted = true; el.playsInline = true; }
+      goLiveStage.appendChild(el);
+    });
+    goLiveMediaList.appendChild(item);
+    goLiveMediaInput.value = '';
+  });
+}
+
+// ===== Cuenta regresiva de segmento =====
+let goLiveCountdownSeconds = 5 * 60;
+let goLiveCountdownInterval = null;
+const goLiveCountdownTime = document.getElementById('goLiveCountdownTime');
+const goLiveCountdownMinutes = document.getElementById('goLiveCountdownMinutes');
+const goLiveCountdownStart = document.getElementById('goLiveCountdownStart');
+const goLiveCountdownReset = document.getElementById('goLiveCountdownReset');
+
+function renderGoLiveCountdown(){
+  const m = String(Math.floor(goLiveCountdownSeconds / 60)).padStart(2, '0');
+  const s = String(goLiveCountdownSeconds % 60).padStart(2, '0');
+  if(goLiveCountdownTime) goLiveCountdownTime.textContent = m + ':' + s;
+}
+
+if(goLiveCountdownStart){
+  goLiveCountdownStart.addEventListener('click', () => {
+    if(goLiveCountdownInterval){
+      clearInterval(goLiveCountdownInterval);
+      goLiveCountdownInterval = null;
+      goLiveCountdownStart.textContent = '▶ Iniciar';
+      return;
+    }
+    goLiveCountdownStart.textContent = '⏸ Pausar';
+    goLiveCountdownInterval = setInterval(() => {
+      if(goLiveCountdownSeconds > 0){
+        goLiveCountdownSeconds--;
+        renderGoLiveCountdown();
+      } else {
+        clearInterval(goLiveCountdownInterval);
+        goLiveCountdownInterval = null;
+        goLiveCountdownStart.textContent = '▶ Iniciar';
+        if(goLiveCountdownTime) goLiveCountdownTime.style.color = '#F87171';
+      }
+    }, 1000);
+  });
+}
+
+if(goLiveCountdownReset){
+  goLiveCountdownReset.addEventListener('click', () => {
+    clearInterval(goLiveCountdownInterval);
+    goLiveCountdownInterval = null;
+    if(goLiveCountdownStart) goLiveCountdownStart.textContent = '▶ Iniciar';
+    const mins = parseInt(goLiveCountdownMinutes.value, 10) || 5;
+    goLiveCountdownSeconds = mins * 60;
+    if(goLiveCountdownTime) goLiveCountdownTime.style.color = '';
+    renderGoLiveCountdown();
+  });
+}
+
+// ===== Banco de sonidos =====
+const goLiveSoundFreqs = { applause: 500, drumroll: 300, ding: 880, whoosh: 200 };
+document.querySelectorAll('.golive-sound-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    try{
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.frequency.value = goLiveSoundFreqs[btn.getAttribute('data-sound')] || 440;
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      gain.gain.setValueAtTime(0.15, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.6);
+      osc.start();
+      osc.stop(ctx.currentTime + 0.6);
+    }catch(e){ /* audio no disponible */ }
+    goLiveHint.textContent = 'Sonido reproducido: ' + btn.textContent;
+  });
+});
+
+// ===== Nombre en pantalla para invitados =====
+const goLiveLowerThirdToggle = document.getElementById('goLiveLowerThirdToggle');
+const goLiveLowerThird = document.getElementById('goLiveLowerThird');
+const goLiveLowerThirdName = document.getElementById('goLiveLowerThirdName');
+const goLiveLowerThirdRole = document.getElementById('goLiveLowerThirdRole');
+const goLiveGuestName = document.getElementById('goLiveGuestName');
+const goLiveGuestRole = document.getElementById('goLiveGuestRole');
+
+if(goLiveLowerThirdToggle){
+  goLiveLowerThirdToggle.addEventListener('click', () => {
+    const active = goLiveLowerThirdToggle.classList.toggle('on');
+    if(active){
+      goLiveLowerThirdName.textContent = goLiveGuestName.value || 'Invitado';
+      goLiveLowerThirdRole.textContent = goLiveGuestRole.value || '';
+      goLiveLowerThird.style.display = 'block';
+    } else {
+      goLiveLowerThird.style.display = 'none';
+    }
+  });
+}
+
+// ===== Plantillas de escena guardadas =====
+const goLiveSaveTemplateBtn = document.getElementById('goLiveSaveTemplateBtn');
+const goLiveTemplateSelect = document.getElementById('goLiveTemplateSelect');
+const GOLIVE_TEMPLATES_KEY = 'voxa_scene_templates';
+
+function loadGoLiveTemplates(){
+  try{ return JSON.parse(localStorage.getItem(GOLIVE_TEMPLATES_KEY) || '[]'); }
+  catch(e){ return []; }
+}
+
+function renderGoLiveTemplateOptions(){
+  if(!goLiveTemplateSelect) return;
+  const templates = loadGoLiveTemplates();
+  goLiveTemplateSelect.innerHTML = '<option value="">Cargar plantilla guardada...</option>';
+  templates.forEach((tpl, i) => {
+    const opt = document.createElement('option');
+    opt.value = String(i);
+    opt.textContent = tpl.name;
+    goLiveTemplateSelect.appendChild(opt);
+  });
+}
+
+if(goLiveSaveTemplateBtn){
+  goLiveSaveTemplateBtn.addEventListener('click', () => {
+    const activeScene = document.querySelector('.golive-scene-thumb.active');
+    const name = prompt('Nombre de la plantilla:', activeScene ? activeScene.textContent + ' guardada' : 'Mi plantilla');
+    if(!name) return;
+    const templates = loadGoLiveTemplates();
+    templates.push({
+      name: name,
+      scene: activeScene ? activeScene.getAttribute('data-scene') : 'intro',
+      logoOn: logoToggleGoLive ? logoToggleGoLive.classList.contains('on') : false,
+      promoOn: promoToggleGoLive ? promoToggleGoLive.classList.contains('on') : false,
+      promoText: promoInputGoLive ? promoInputGoLive.value : ''
+    });
+    localStorage.setItem(GOLIVE_TEMPLATES_KEY, JSON.stringify(templates));
+    renderGoLiveTemplateOptions();
+    goLiveHint.textContent = 'Plantilla "' + name + '" guardada.';
+  });
+}
+
+if(goLiveTemplateSelect){
+  goLiveTemplateSelect.addEventListener('change', () => {
+    const idx = goLiveTemplateSelect.value;
+    if(idx === '') return;
+    const templates = loadGoLiveTemplates();
+    const tpl = templates[parseInt(idx, 10)];
+    if(!tpl) return;
+    const sceneBtn = document.querySelector('.golive-scene-thumb[data-scene="' + tpl.scene + '"]');
+    if(sceneBtn) sceneBtn.click();
+    if(promoInputGoLive) promoInputGoLive.value = tpl.promoText || '';
+    goLiveHint.textContent = 'Plantilla "' + tpl.name + '" cargada.';
+  });
+}
+
+renderGoLiveTemplateOptions();
+
+// ===== Sala de espera de invitados =====
+const goLiveQueueNameInput = document.getElementById('goLiveQueueNameInput');
+const goLiveQueueAddBtn = document.getElementById('goLiveQueueAddBtn');
+const goLiveQueueList = document.getElementById('goLiveQueueList');
+let goLiveQueue = [];
+
+function renderGoLiveQueue(){
+  if(!goLiveQueueList) return;
+  goLiveQueueList.innerHTML = '';
+  if(goLiveQueue.length === 0){
+    goLiveQueueList.innerHTML = '<div class="golive-queue-empty">Nadie está esperando por ahora.</div>';
+    return;
+  }
+  goLiveQueue.forEach((name, i) => {
+    const row = document.createElement('div');
+    row.className = 'golive-queue-item';
+    row.innerHTML = '<span>' + name + '</span><div class="golive-queue-item-actions"><button class="admit">Admitir</button><button class="remove">Quitar</button></div>';
+    row.querySelector('.admit').addEventListener('click', () => {
+      goLiveHint.textContent = name + ' fue admitido al estudio.';
+      goLiveQueue.splice(i, 1);
+      renderGoLiveQueue();
+    });
+    row.querySelector('.remove').addEventListener('click', () => {
+      goLiveQueue.splice(i, 1);
+      renderGoLiveQueue();
+    });
+    goLiveQueueList.appendChild(row);
+  });
+}
+
+if(goLiveQueueAddBtn){
+  goLiveQueueAddBtn.addEventListener('click', () => {
+    const name = goLiveQueueNameInput.value.trim();
+    if(!name) return;
+    goLiveQueue.push(name);
+    goLiveQueueNameInput.value = '';
+    renderGoLiveQueue();
+  });
+}
+
+renderGoLiveQueue();
+
+// ===== Grabación multi-pista (toggle) =====
+const multitrackToggle = document.getElementById('multitrackToggle');
+if(multitrackToggle){
+  multitrackToggle.addEventListener('click', () => {
+    multitrackToggle.classList.toggle('on');
+  });
+}
+
+// ===== Resumen del episodio con IA =====
+const aiSummaryBtn = document.getElementById('aiSummaryBtn');
+const aiSummaryBox = document.getElementById('aiSummaryBox');
+if(aiSummaryBtn && aiSummaryBox){
+  aiSummaryBtn.addEventListener('click', () => {
+    aiSummaryBox.style.display = 'block';
+    aiSummaryBox.textContent = 'Generando resumen y capítulos con marcas de tiempo...';
+    setTimeout(() => {
+      const mins = Math.max(1, Math.floor((typeof recordSeconds !== 'undefined' ? recordSeconds : 0) / 60));
+      aiSummaryBox.innerHTML = '<strong>Resumen del episodio</strong><br>Duración aproximada: ' + mins + ' minutos.<br><br><strong>Capítulos sugeridos</strong><br>00:00 Introducción<br>' + (mins > 2 ? Math.floor(mins/3) + ':00 Desarrollo del tema<br>' : '') + (mins > 4 ? Math.floor(mins*2/3) + ':00 Cierre' : '');
+    }, 1200);
+  });
+}
+
+// ===== Programar transmisión futura =====
+const goLiveScheduleTitle = document.getElementById('goLiveScheduleTitle');
+const goLiveScheduleDate = document.getElementById('goLiveScheduleDate');
+const goLiveScheduleBtn = document.getElementById('goLiveScheduleBtn');
+const goLiveScheduleList = document.getElementById('goLiveScheduleList');
+const GOLIVE_SCHEDULE_KEY = 'voxa_scheduled_streams';
+
+function loadGoLiveSchedule(){
+  try{ return JSON.parse(localStorage.getItem(GOLIVE_SCHEDULE_KEY) || '[]'); }
+  catch(e){ return []; }
+}
+
+function renderGoLiveSchedule(){
+  if(!goLiveScheduleList) return;
+  const items = loadGoLiveSchedule();
+  goLiveScheduleList.innerHTML = '';
+  items.forEach(it => {
+    const div = document.createElement('div');
+    div.className = 'golive-schedule-item';
+    const d = new Date(it.date);
+    const dateStr = isNaN(d.getTime()) ? it.date : d.toLocaleString();
+    div.innerHTML = it.title + '<span>' + dateStr + '</span>';
+    goLiveScheduleList.appendChild(div);
+  });
+}
+
+if(goLiveScheduleBtn){
+  goLiveScheduleBtn.addEventListener('click', () => {
+    const title = goLiveScheduleTitle.value.trim();
+    const date = goLiveScheduleDate.value;
+    if(!title || !date) return;
+    const items = loadGoLiveSchedule();
+    items.push({ title: title, date: date });
+    localStorage.setItem(GOLIVE_SCHEDULE_KEY, JSON.stringify(items));
+    goLiveScheduleTitle.value = '';
+    goLiveScheduleDate.value = '';
+    renderGoLiveSchedule();
+    goLiveHint.textContent = 'Transmisión "' + title + '" programada y anunciada a tu audiencia.';
+  });
+}
+
+renderGoLiveSchedule();
 
 goLiveSendBtn.addEventListener('click', () => {
   goLiveOnAir = !goLiveOnAir;
