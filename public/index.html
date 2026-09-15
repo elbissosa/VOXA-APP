@@ -1594,6 +1594,139 @@
   .ai-msg.character{ background: rgba(45,212,191,0.10); border:1px solid rgba(45,212,191,0.3); align-self:flex-start; color: var(--text); }
   .ai-msg.thinking{ color: var(--muted); font-style:italic; }
   .ai-interview-input-row{ display:flex; gap:6px; }
+
+  /* ===== Pantalla "En Vivo" (vista previa + envío al aire) ===== */
+  .golive-overlay{
+    position:fixed;
+    inset:0;
+    background: radial-gradient(circle at 30% 20%, #171b24, #0A0C10 70%);
+    display:none;
+    z-index:1200;
+    flex-direction:column;
+  }
+  .golive-overlay.show{ display:flex; }
+  .golive-topbar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:14px 22px;
+    border-bottom:1px solid var(--line);
+    flex-shrink:0;
+  }
+  .golive-topbar-left{ display:flex; align-items:center; gap:14px; }
+  .golive-badge{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    font-family:'Oswald', sans-serif;
+    letter-spacing:1.5px;
+    font-size:13px;
+    padding:6px 12px;
+    border-radius:20px;
+    background: rgba(107,114,128,0.18);
+    color: var(--muted);
+    border:1px solid rgba(107,114,128,0.3);
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
+  }
+  .golive-badge .golive-dot{
+    width:8px; height:8px; border-radius:50%;
+    background: var(--muted);
+  }
+  .golive-badge.on{
+    background: rgba(239,68,68,0.16);
+    color:#F87171;
+    border-color: rgba(239,68,68,0.4);
+  }
+  .golive-badge.on .golive-dot{
+    background:#EF4444;
+    box-shadow:0 0 8px rgba(239,68,68,0.8);
+    animation: golivePulse 1.4s infinite;
+  }
+  @keyframes golivePulse{ 0%,100%{opacity:1;} 50%{opacity:0.35;} }
+  .golive-timer{ font-family:'JetBrains Mono', monospace; color: var(--text); font-size:14px; }
+  .golive-close{
+    background:transparent;
+    border:1px solid var(--line);
+    color: var(--muted);
+    border-radius:8px;
+    padding:8px 14px;
+    cursor:pointer;
+    font-size:13px;
+    font-family:'Inter', sans-serif;
+  }
+  .golive-close:hover{ color: var(--text); border-color: rgba(255,255,255,0.3); }
+  .golive-body{
+    flex:1;
+    display:grid;
+    grid-template-columns: 1fr 320px;
+    gap:1px;
+    background: var(--line);
+    min-height:0;
+  }
+  .golive-stage{
+    background:#0A0C10;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    position:relative;
+    min-height:0;
+  }
+  .golive-stage video{
+    width:100%; height:100%; object-fit:cover;
+  }
+  .golive-stage .tile-placeholder{ position:absolute; inset:0; }
+  .golive-side{
+    background: linear-gradient(180deg, #14171E, #0F1116);
+    display:flex;
+    flex-direction:column;
+    min-height:0;
+  }
+  .golive-side-title{
+    padding:14px 16px 8px;
+    font-family:'Oswald', sans-serif;
+    font-size:12px;
+    letter-spacing:1.2px;
+    color: var(--muted);
+    flex-shrink:0;
+  }
+  .golive-chat{
+    flex:1;
+    overflow-y:auto;
+    padding:0 16px 16px;
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+  }
+  .golive-bottombar{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:14px;
+    padding:16px 22px;
+    border-top:1px solid var(--line);
+    flex-shrink:0;
+  }
+  .golive-send-btn{
+    background: linear-gradient(135deg, #EF4444, #DC2626);
+    color:#fff;
+    border:none;
+    border-radius:10px;
+    padding:12px 26px;
+    font-family:'Oswald', sans-serif;
+    letter-spacing:1px;
+    font-size:14px;
+    cursor:pointer;
+    box-shadow: 0 6px 18px rgba(239,68,68,0.35);
+  }
+  .golive-send-btn:hover{ filter:brightness(1.08); }
+  .golive-send-btn.stop{
+    background: linear-gradient(135deg, #374151, #1F2937);
+    box-shadow:none;
+  }
+  .golive-hint{ color: var(--muted); font-size:12px; }
+  @media (max-width: 880px){
+    .golive-body{ grid-template-columns: 1fr; grid-template-rows: 1fr 220px; }
+  }
 </style>
 </head>
 <body>
@@ -1707,7 +1840,7 @@
     <div class="topbar-right">
       <button class="btn-secondary" id="changePlanBtn" style="width:auto; padding:6px 12px; font-size:12px; display:none;">🔄 Cambiar plan</button>
       <div class="practice-badge" id="practiceBadge">🎯 MODO PRÁCTICA — no se guarda ni transmite</div>
-      <div class="participants-count" id="participantsCount">5 lugares</div>
+      <div class="participants-count" id="participantsCount">3 lugares</div>
       <div id="timer">00:00:00</div>
       <div class="rec-status idle" id="recStatus">
         <div class="rec-dot"></div>
@@ -1720,9 +1853,9 @@
 
     <div class="sidebar-nav" id="sidebarNav">
       <button class="sidebar-nav-item active" data-navtarget="stageTop"><span class="nav-ico">🏠</span>Dashboard</button>
+      <button class="sidebar-nav-item" data-navtarget="panelGoLive"><span class="nav-ico">🔴</span>En Vivo</button>
       <button class="sidebar-nav-item" data-navtarget="panelStream"><span class="nav-ico">📡</span>Transmisión</button>
       <button class="sidebar-nav-item" data-navtarget="panelPoll"><span class="nav-ico">📊</span>Encuesta</button>
-      <button class="sidebar-nav-item" data-navtarget="panelAIInterview"><span class="nav-ico">🤖</span>Entrevista IA</button>
       <button class="sidebar-nav-item" data-navtarget="panelChat"><span class="nav-ico">💬</span>Chat en vivo</button>
       <button class="sidebar-nav-item" data-navtarget="panelReplay"><span class="nav-ico">🔁</span>Repeticiones</button>
       <button class="sidebar-nav-item" data-navaction="stats"><span class="nav-ico">📈</span>Estadísticas</button>
@@ -1749,7 +1882,7 @@
       <button class="clip-btn" id="clipBtn">✂ Marcar clip</button>
 
       <div style="position:relative; flex:1; display:flex;">
-        <div class="camera-grid" id="cameraGrid" data-count="5" style="flex:1;">
+        <div class="camera-grid" id="cameraGrid" data-count="3" style="flex:1;">
           <!-- tiles injected by JS -->
         </div>
         <div class="overlay-layer">
@@ -2029,6 +2162,29 @@
   </div>
 </div>
 
+<div class="golive-overlay" id="goLivePanel">
+  <div class="golive-topbar">
+    <div class="golive-topbar-left">
+      <div class="golive-badge" id="goLiveBadge"><div class="golive-dot"></div><span id="goLiveBadgeText">FUERA DE AIRE</span></div>
+      <div class="golive-timer" id="goLiveTimer">00:00:00</div>
+    </div>
+    <button class="golive-close" id="goLiveCloseBtn">✕ Cerrar vista previa</button>
+  </div>
+  <div class="golive-body">
+    <div class="golive-stage" id="goLiveStage">
+      <video id="goLiveVideo" autoplay muted playsinline></video>
+    </div>
+    <div class="golive-side">
+      <div class="golive-side-title">CHAT EN VIVO · YOUTUBE · KICK · INSTAGRAM</div>
+      <div class="golive-chat" id="goLiveChatBox"></div>
+    </div>
+  </div>
+  <div class="golive-bottombar">
+    <span class="golive-hint" id="goLiveHint">Ajusta cámara, overlays y destinos aquí antes de salir al aire.</span>
+    <button class="golive-send-btn" id="goLiveSendBtn">🔴 Enviar al en vivo</button>
+  </div>
+</div>
+
 <div class="clip-flash" id="clipFlash"></div>
 <div class="clip-toast" id="clipToast">✂ Clip guardado — 00:00:00</div>
 <div class="stats-overlay" id="statsOverlay">
@@ -2074,13 +2230,13 @@ window.addEventListener('error', function(e){
     document.body.appendChild(banner);
   }catch(err){}
 });
-const NAMES = ['Tú', 'Invitado 2', 'Invitado 3', 'Invitado 4', 'Invitado 5'];
-let camState = { 0: 'off', 1: 'off', 2: 'off', 3: 'off', 4: 'off' };
+const NAMES = ['Tú', 'Invitado 2', 'Invitado 3'];
+let camState = { 0: 'off', 1: 'off', 2: 'off' };
 function stateLabel(state){
   return { on: 'GRABANDO', off: 'APAGADA', error: 'FALLO' }[state];
 }
-let slotCount = 5;
-let maxCamerasAllowed = 5;
+let slotCount = 3;
+let maxCamerasAllowed = 3;
 let maxDestinationsAllowed = 3;
 let layoutMode = 'auto'; // auto | grid | focus
 let speakingIndex = 0;
@@ -2475,6 +2631,12 @@ function pushChatMessage(){
   chatBox.appendChild(line);
   chatBox.scrollTop = chatBox.scrollHeight;
   if(chatBox.children.length > 20) chatBox.removeChild(chatBox.firstChild);
+  const goLiveChatBoxEl = document.getElementById('goLiveChatBox');
+  if(goLiveChatBoxEl){
+    goLiveChatBoxEl.appendChild(line.cloneNode(true));
+    goLiveChatBoxEl.scrollTop = goLiveChatBoxEl.scrollHeight;
+    if(goLiveChatBoxEl.children.length > 20) goLiveChatBoxEl.removeChild(goLiveChatBoxEl.firstChild);
+  }
 }
 setInterval(pushChatMessage, 4000);
 pushChatMessage();
@@ -2768,9 +2930,82 @@ document.querySelectorAll('.sidebar-nav-item').forEach(btn => {
       return;
     }
     const targetId = btn.getAttribute('data-navtarget');
+    if (targetId === 'panelGoLive') {
+      openGoLive();
+      return;
+    }
     const el = targetId && document.getElementById(targetId);
     if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
+});
+
+// ===== Pantalla "En Vivo" (vista previa + enviar al aire) =====
+const goLivePanel = document.getElementById('goLivePanel');
+const goLiveVideo = document.getElementById('goLiveVideo');
+const goLiveBadge = document.getElementById('goLiveBadge');
+const goLiveBadgeText = document.getElementById('goLiveBadgeText');
+const goLiveTimerEl = document.getElementById('goLiveTimer');
+const goLiveSendBtn = document.getElementById('goLiveSendBtn');
+const goLiveCloseBtn = document.getElementById('goLiveCloseBtn');
+const goLiveChatBox = document.getElementById('goLiveChatBox');
+let goLiveOnAir = false;
+let goLiveSeconds = 0;
+let goLiveTimerInterval = null;
+
+function formatGoLiveTime(totalSeconds){
+  const h = String(Math.floor(totalSeconds/3600)).padStart(2,'0');
+  const m = String(Math.floor((totalSeconds%3600)/60)).padStart(2,'0');
+  const s = String(totalSeconds%60).padStart(2,'0');
+  return `${h}:${m}:${s}`;
+}
+
+async function openGoLive(){
+  goLivePanel.classList.add('show');
+  try{
+    if(!localStream){
+      localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+      setupVoiceDetection(localStream);
+    }
+    goLiveVideo.srcObject = localStream;
+    camState[0] = 'on';
+  }catch(e){
+    // sin cámara disponible; se deja el recuadro en negro, no bloquea la vista previa
+  }
+  // copia los mensajes de chat ya existentes para no empezar vacío
+  goLiveChatBox.innerHTML = chatBox ? chatBox.innerHTML : '';
+  goLiveChatBox.scrollTop = goLiveChatBox.scrollHeight;
+}
+
+function closeGoLive(){
+  goLivePanel.classList.remove('show');
+  document.querySelectorAll('.sidebar-nav-item').forEach(b => b.classList.remove('active'));
+  const dashBtn = document.querySelector('.sidebar-nav-item[data-navtarget="stageTop"]');
+  if(dashBtn) dashBtn.classList.add('active');
+}
+
+goLiveCloseBtn.addEventListener('click', closeGoLive);
+
+goLiveSendBtn.addEventListener('click', () => {
+  goLiveOnAir = !goLiveOnAir;
+  if(goLiveOnAir){
+    goLiveBadge.classList.add('on');
+    goLiveBadgeText.textContent = 'EN VIVO';
+    goLiveSendBtn.textContent = '⏹ Terminar transmisión';
+    goLiveSendBtn.classList.add('stop');
+    goLiveSeconds = 0;
+    goLiveTimerEl.textContent = formatGoLiveTime(0);
+    goLiveTimerInterval = setInterval(() => {
+      goLiveSeconds++;
+      goLiveTimerEl.textContent = formatGoLiveTime(goLiveSeconds);
+    }, 1000);
+    if(!recording && recordBtn) recordBtn.click();
+  } else {
+    goLiveBadge.classList.remove('on');
+    goLiveBadgeText.textContent = 'FUERA DE AIRE';
+    goLiveSendBtn.textContent = '🔴 Enviar al en vivo';
+    goLiveSendBtn.classList.remove('stop');
+    clearInterval(goLiveTimerInterval);
+  }
 });
 
 // ===== Notificación automática a redes al empezar transmisión =====
