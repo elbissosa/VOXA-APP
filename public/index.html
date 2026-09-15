@@ -2314,7 +2314,7 @@
       <div class="golive-badge" id="goLiveBadge"><div class="golive-dot"></div><span id="goLiveBadgeText">FUERA DE AIRE</span></div>
       <div class="golive-timer" id="goLiveTimer">00:00:00</div>
     </div>
-    <button class="golive-close" id="goLiveCloseBtn">✕ Cerrar vista previa</button>
+    <button class="golive-close" id="goLiveCloseBtn">⚙️ Panel clásico</button>
   </div>
 
   <div class="golive-channels">
@@ -3265,6 +3265,16 @@ function closeGoLive(){
 }
 
 goLiveCloseBtn.addEventListener('click', closeGoLive);
+
+// ===== VOXA Studio es ahora la vista principal al abrir la app =====
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    document.querySelectorAll('.sidebar-nav-item').forEach(b => b.classList.remove('active'));
+    const liveBtn = document.querySelector('.sidebar-nav-item[data-navtarget="panelGoLive"]');
+    if (liveBtn) liveBtn.classList.add('active');
+    openGoLive();
+  }, 200);
+});
 
 document.querySelectorAll('.golive-tab').forEach(tabBtn => {
   tabBtn.addEventListener('click', () => {
