@@ -1724,8 +1724,153 @@
     box-shadow:none;
   }
   .golive-hint{ color: var(--muted); font-size:12px; }
+  .golive-tabs{
+    display:flex;
+    border-bottom:1px solid var(--line);
+    flex-shrink:0;
+  }
+  .golive-tab{
+    flex:1;
+    background:transparent;
+    border:none;
+    color: var(--muted);
+    padding:12px 6px;
+    font-size:12px;
+    font-family:'Inter', sans-serif;
+    cursor:pointer;
+    border-bottom:2px solid transparent;
+  }
+  .golive-tab.active{
+    color: var(--live-teal);
+    border-bottom-color: var(--live-teal);
+  }
+  .golive-tabpanel{
+    flex:1;
+    overflow-y:auto;
+    display:flex;
+    flex-direction:column;
+    min-height:0;
+  }
+  .golive-cams-list{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    padding:0 16px 16px;
+  }
+  .golive-cam-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    padding:9px 12px;
+    border-radius:8px;
+    background: var(--panel-raised);
+    border:1px solid var(--line);
+  }
+  .golive-cam-row-name{ font-size:13px; color: var(--text); }
+  .golive-cam-row-state{ font-size:11px; color: var(--muted); font-family:'JetBrains Mono', monospace; }
+  .golive-brandmark{
+    font-family:'Oswald', sans-serif;
+    letter-spacing:2px;
+    font-size:12px;
+    color: var(--live-teal);
+    border:1px solid rgba(45,212,191,0.35);
+    border-radius:6px;
+    padding:5px 10px;
+  }
+  .golive-channels{
+    display:flex;
+    gap:10px;
+    padding:10px 22px;
+    border-bottom:1px solid var(--line);
+    flex-shrink:0;
+  }
+  .golive-channel-chip{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    font-size:12px;
+    color: var(--muted);
+    background: var(--panel-raised);
+    border:1px solid var(--line);
+    border-radius:20px;
+    padding:5px 12px;
+  }
+  .golive-channel-dot{ width:7px; height:7px; border-radius:50%; background: var(--muted); }
+  .golive-channel-dot.on{ background:#4ADE80; box-shadow:0 0 6px rgba(74,222,128,0.7); }
+  .golive-stage-col{
+    display:flex;
+    flex-direction:column;
+    min-height:0;
+    min-width:0;
+  }
+  .golive-scenes-bar{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:12px 16px;
+    border-top:1px solid var(--line);
+    background: linear-gradient(180deg, #14171E, #0F1116);
+    flex-shrink:0;
+  }
+  .golive-scenes-label{
+    font-family:'Oswald', sans-serif;
+    font-size:11px;
+    letter-spacing:1.2px;
+    color: var(--muted);
+    flex-shrink:0;
+  }
+  .golive-scenes-list{
+    display:flex;
+    gap:8px;
+    flex:1;
+    overflow-x:auto;
+  }
+  .golive-scene-thumb{
+    flex-shrink:0;
+    background: var(--panel-raised);
+    border:1px solid var(--line);
+    color: var(--muted);
+    border-radius:8px;
+    padding:10px 16px;
+    font-size:12px;
+    font-family:'Inter', sans-serif;
+    cursor:pointer;
+  }
+  .golive-scene-thumb.active{
+    border-color: var(--live-teal);
+    color: var(--text);
+    background: rgba(45,212,191,0.12);
+  }
+  .golive-add-source-btn{
+    flex-shrink:0;
+    background:transparent;
+    border:1px dashed rgba(255,255,255,0.3);
+    color: var(--muted);
+    border-radius:8px;
+    padding:10px 14px;
+    font-size:12px;
+    cursor:pointer;
+  }
+  .golive-add-source-btn:hover{ color: var(--text); border-color: var(--live-teal); }
+  .golive-bottombar-actions{ display:flex; gap:10px; }
+  .golive-rec-btn{
+    background:transparent;
+    border:1px solid var(--line);
+    color: var(--text);
+    border-radius:10px;
+    padding:12px 20px;
+    font-family:'Oswald', sans-serif;
+    letter-spacing:1px;
+    font-size:14px;
+    cursor:pointer;
+  }
+  .golive-rec-btn.active{
+    border-color:#EF4444;
+    color:#F87171;
+  }
   @media (max-width: 880px){
-    .golive-body{ grid-template-columns: 1fr; grid-template-rows: 1fr 220px; }
+    .golive-body{ grid-template-columns: 1fr; grid-template-rows: 1fr 260px; }
   }
 </style>
 </head>
@@ -2165,23 +2310,89 @@
 <div class="golive-overlay" id="goLivePanel">
   <div class="golive-topbar">
     <div class="golive-topbar-left">
+      <span class="golive-brandmark">VOXA STUDIO</span>
       <div class="golive-badge" id="goLiveBadge"><div class="golive-dot"></div><span id="goLiveBadgeText">FUERA DE AIRE</span></div>
       <div class="golive-timer" id="goLiveTimer">00:00:00</div>
     </div>
     <button class="golive-close" id="goLiveCloseBtn">✕ Cerrar vista previa</button>
   </div>
+
+  <div class="golive-channels">
+    <div class="golive-channel-chip"><span class="golive-channel-dot on"></span>YouTube</div>
+    <div class="golive-channel-chip"><span class="golive-channel-dot on"></span>Kick</div>
+    <div class="golive-channel-chip"><span class="golive-channel-dot on"></span>Instagram</div>
+  </div>
+
   <div class="golive-body">
-    <div class="golive-stage" id="goLiveStage">
-      <video id="goLiveVideo" autoplay muted playsinline></video>
+    <div class="golive-stage-col">
+      <div class="golive-stage" id="goLiveStage">
+        <video id="goLiveVideo" autoplay muted playsinline></video>
+      </div>
+
+      <div class="golive-scenes-bar">
+        <div class="golive-scenes-label">ESCENAS</div>
+        <div class="golive-scenes-list" id="goLiveScenesList">
+          <button class="golive-scene-thumb active" data-scene="intro">Intro</button>
+          <button class="golive-scene-thumb" data-scene="entrevista">Entrevista</button>
+          <button class="golive-scene-thumb" data-scene="cierre">Cierre</button>
+        </div>
+        <button class="golive-add-source-btn" id="goLiveAddSourceBtn">+ Agregar fuente</button>
+      </div>
     </div>
+
     <div class="golive-side">
-      <div class="golive-side-title">CHAT EN VIVO · YOUTUBE · KICK · INSTAGRAM</div>
-      <div class="golive-chat" id="goLiveChatBox"></div>
+      <div class="golive-tabs" id="goLiveTabs">
+        <button class="golive-tab active" data-golivetab="cams">Cámaras</button>
+        <button class="golive-tab" data-golivetab="overlay">Gráficos</button>
+        <button class="golive-tab" data-golivetab="dest">Destinos</button>
+        <button class="golive-tab" data-golivetab="chat">Chat</button>
+      </div>
+
+      <div class="golive-tabpanel" id="goLiveTab-cams">
+        <div class="golive-side-title" style="padding-top:12px;">FUENTES DE ESTA ESCENA</div>
+        <div class="golive-cams-list" id="goLiveCamsList"></div>
+      </div>
+
+      <div class="golive-tabpanel" id="goLiveTab-overlay" style="display:none;">
+        <div class="golive-side-title" style="padding-top:12px;">GRÁFICOS EN VIVO</div>
+        <div class="overlay-controls" style="padding:0 16px;">
+          <div class="overlay-row">
+            <span class="overlay-row-label">Mostrar tu logo en pantalla</span>
+            <div class="toggle" id="logoToggleGoLive"></div>
+          </div>
+          <div class="pos-grid" id="posGridGoLive">
+            <button class="pos-btn active" data-pos="pos-tl">SUP · IZQ</button>
+            <button class="pos-btn" data-pos="pos-tr">SUP · DER</button>
+            <button class="pos-btn" data-pos="pos-bl">INF · IZQ</button>
+            <button class="pos-btn" data-pos="pos-br">INF · DER</button>
+          </div>
+          <input type="text" class="overlay-input" id="promoInputGoLive" placeholder="Texto de promoción, ej. Sígueme en @tucuenta" maxlength="60">
+          <div class="overlay-row">
+            <span class="overlay-row-label">Mostrar promoción en pantalla</span>
+            <div class="toggle" id="promoToggleGoLive"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="golive-tabpanel" id="goLiveTab-dest" style="display:none;">
+        <div class="golive-side-title" style="padding-top:12px;">DESTINOS DE TRANSMISIÓN</div>
+        <div class="destination-list" id="goLiveDestList" style="padding:0 16px;"></div>
+        <div class="dest-key-hint" style="padding:0 16px;">Tu clave se guarda solo en este navegador, nunca se comparte con otros usuarios.</div>
+      </div>
+
+      <div class="golive-tabpanel" id="goLiveTab-chat">
+        <div class="golive-side-title">CHAT EN VIVO · YOUTUBE · KICK · INSTAGRAM</div>
+        <div class="golive-chat" id="goLiveChatBox"></div>
+      </div>
     </div>
   </div>
+
   <div class="golive-bottombar">
     <span class="golive-hint" id="goLiveHint">Ajusta cámara, overlays y destinos aquí antes de salir al aire.</span>
-    <button class="golive-send-btn" id="goLiveSendBtn">🔴 Enviar al en vivo</button>
+    <div class="golive-bottombar-actions">
+      <button class="golive-rec-btn" id="goLiveRecBtn">⏺ Rec</button>
+      <button class="golive-send-btn" id="goLiveSendBtn">🔴 Go Live</button>
+    </div>
   </div>
 </div>
 
@@ -2679,6 +2890,41 @@ promoInput.addEventListener('input', () => {
   }
 });
 
+// ===== Espejo de controles de overlay dentro de la pantalla "En Vivo" =====
+const logoToggleGoLive = document.getElementById('logoToggleGoLive');
+const posGridGoLive = document.getElementById('posGridGoLive');
+const promoInputGoLive = document.getElementById('promoInputGoLive');
+const promoToggleGoLive = document.getElementById('promoToggleGoLive');
+
+if(logoToggleGoLive){
+  logoToggleGoLive.addEventListener('click', () => { logoToggle.click(); logoToggleGoLive.classList.toggle('on', logoToggle.classList.contains('on')); });
+}
+if(posGridGoLive){
+  posGridGoLive.querySelectorAll('.pos-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      posGridGoLive.querySelectorAll('.pos-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      posGrid.querySelectorAll('.pos-btn').forEach(b => {
+        b.classList.toggle('active', b.dataset.pos === btn.dataset.pos);
+        if(b.dataset.pos === btn.dataset.pos) b.click();
+      });
+    });
+  });
+}
+if(promoToggleGoLive){
+  promoToggleGoLive.addEventListener('click', () => {
+    promoInput.value = promoInputGoLive.value;
+    promoToggle.click();
+    promoToggleGoLive.classList.toggle('on', promoToggle.classList.contains('on'));
+  });
+}
+if(promoInputGoLive){
+  promoInputGoLive.addEventListener('input', () => {
+    promoInput.value = promoInputGoLive.value;
+    promoInput.dispatchEvent(new Event('input'));
+  });
+}
+
 // ===== Video profesional: estado y aplicación combinada de filtros =====
 const videoPro = {
   bg: 'none',
@@ -2959,6 +3205,29 @@ function formatGoLiveTime(totalSeconds){
   return `${h}:${m}:${s}`;
 }
 
+const goLiveDestList = document.getElementById('goLiveDestList');
+const destinationListOriginal = document.querySelector('#panelStream .destination-list');
+let destListHomeParent = null;
+let destListHomeNextSibling = null;
+
+function buildGoLiveCamsList(){
+  const list = document.getElementById('goLiveCamsList');
+  if(!list) return;
+  list.innerHTML = '';
+  for(let i = 0; i < slotCount; i++){
+    const row = document.createElement('div');
+    row.className = 'golive-cam-row';
+    const state = camState[i] || 'off';
+    row.innerHTML = `<span class="golive-cam-row-name">${NAMES[i] || ('Invitado ' + (i+1))}</span><span class="golive-cam-row-state">${stateLabel(state)}</span>`;
+    row.addEventListener('click', () => {
+      const camStatusEl = document.querySelector('.cam-status[data-index="' + i + '"]');
+      if(camStatusEl) camStatusEl.click();
+      setTimeout(buildGoLiveCamsList, 150);
+    });
+    list.appendChild(row);
+  }
+}
+
 async function openGoLive(){
   goLivePanel.classList.add('show');
   try{
@@ -2974,6 +3243,13 @@ async function openGoLive(){
   // copia los mensajes de chat ya existentes para no empezar vacío
   goLiveChatBox.innerHTML = chatBox ? chatBox.innerHTML : '';
   goLiveChatBox.scrollTop = goLiveChatBox.scrollHeight;
+  buildGoLiveCamsList();
+  // mueve el bloque real de destinos (con sus claves) dentro de la pantalla En Vivo
+  if(destinationListOriginal && goLiveDestList && !destListHomeParent){
+    destListHomeParent = destinationListOriginal.parentNode;
+    destListHomeNextSibling = destinationListOriginal.nextSibling;
+    goLiveDestList.appendChild(destinationListOriginal);
+  }
 }
 
 function closeGoLive(){
@@ -2981,9 +3257,57 @@ function closeGoLive(){
   document.querySelectorAll('.sidebar-nav-item').forEach(b => b.classList.remove('active'));
   const dashBtn = document.querySelector('.sidebar-nav-item[data-navtarget="stageTop"]');
   if(dashBtn) dashBtn.classList.add('active');
+  // regresa el bloque de destinos a su lugar original en el Dashboard
+  if(destListHomeParent && destinationListOriginal){
+    destListHomeParent.insertBefore(destinationListOriginal, destListHomeNextSibling);
+    destListHomeParent = null;
+  }
 }
 
 goLiveCloseBtn.addEventListener('click', closeGoLive);
+
+document.querySelectorAll('.golive-tab').forEach(tabBtn => {
+  tabBtn.addEventListener('click', () => {
+    document.querySelectorAll('.golive-tab').forEach(b => b.classList.remove('active'));
+    tabBtn.classList.add('active');
+    const target = tabBtn.getAttribute('data-golivetab');
+    ['cams','overlay','dest','chat'].forEach(key => {
+      const panel = document.getElementById('goLiveTab-' + key);
+      if(panel) panel.style.display = (key === target) ? 'flex' : 'none';
+    });
+  });
+});
+
+// ===== Escenas y fuentes (estilo estudio profesional tipo PRISM) =====
+document.querySelectorAll('.golive-scene-thumb').forEach(sceneBtn => {
+  sceneBtn.addEventListener('click', () => {
+    document.querySelectorAll('.golive-scene-thumb').forEach(b => b.classList.remove('active'));
+    sceneBtn.classList.add('active');
+    goLiveHint.textContent = 'Escena activa: ' + sceneBtn.textContent + '. Ajusta cámara, overlays y destinos aquí antes de salir al aire.';
+  });
+});
+
+const goLiveAddSourceBtn = document.getElementById('goLiveAddSourceBtn');
+if(goLiveAddSourceBtn){
+  goLiveAddSourceBtn.addEventListener('click', () => {
+    document.querySelectorAll('.golive-tab').forEach(b => b.classList.remove('active'));
+    document.querySelector('.golive-tab[data-golivetab="cams"]').classList.add('active');
+    ['cams','overlay','dest','chat'].forEach(key => {
+      const panel = document.getElementById('goLiveTab-' + key);
+      if(panel) panel.style.display = (key === 'cams') ? 'flex' : 'none';
+    });
+    buildGoLiveCamsList();
+  });
+}
+
+const goLiveRecBtn = document.getElementById('goLiveRecBtn');
+if(goLiveRecBtn){
+  goLiveRecBtn.addEventListener('click', () => {
+    if(recordBtn) recordBtn.click();
+    goLiveRecBtn.classList.toggle('active', recording);
+    goLiveRecBtn.textContent = recording ? '⏺ Grabando' : '⏺ Rec';
+  });
+}
 
 goLiveSendBtn.addEventListener('click', () => {
   goLiveOnAir = !goLiveOnAir;
