@@ -700,6 +700,71 @@
   .dest-kick{ background:#1E2A0E; color:#9FE843; }
   .dest-ig{ background:#3A1230; color:#F277C6; }
 
+  .destination-block{
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+    padding:10px 12px;
+    border-radius:8px;
+    background: var(--panel-raised);
+    border:1px solid var(--line);
+  }
+  .destination-block .destination{
+    padding:0;
+    border:none;
+    background:transparent;
+  }
+  .dest-key-row{
+    display:flex;
+    align-items:center;
+    gap:6px;
+  }
+  .dest-key-input{
+    flex:1;
+    min-width:0;
+    background: var(--bg-app);
+    border:1px solid var(--line);
+    border-radius:6px;
+    padding:7px 9px;
+    font-size:12px;
+    color: var(--text);
+    font-family:'Inter', sans-serif;
+  }
+  .dest-key-input:focus{
+    outline:none;
+    border-color: var(--live-teal);
+  }
+  .dest-key-toggle{
+    background: var(--bg-app);
+    border:1px solid var(--line);
+    border-radius:6px;
+    padding:6px 9px;
+    cursor:pointer;
+    font-size:13px;
+    color: var(--text-dim);
+  }
+  .dest-key-toggle:hover{
+    border-color: var(--live-teal);
+    color: var(--live-teal);
+  }
+  .dest-key-status{
+    font-size:11px;
+    color: var(--text-dim);
+    min-height:14px;
+  }
+  .dest-key-status.saved{
+    color: var(--live-teal);
+  }
+  .dest-key-status.missing{
+    color:#FF6B6B;
+  }
+  .dest-key-hint{
+    font-size:11px;
+    color: var(--text-dim);
+    margin-top:8px;
+    line-height:1.4;
+  }
+
   .toggle{
     width:36px; height:20px;
     border-radius:20px;
@@ -1781,19 +1846,41 @@
       <div id="panelStream">
         <div class="panel-section-title">Transmitir en vivo</div>
         <div class="destination-list">
-          <div class="destination">
-            <div class="destination-name"><div class="dest-icon dest-yt">YT</div>YouTube</div>
-            <div class="toggle" data-dest="youtube"></div>
+          <div class="destination-block">
+            <div class="destination">
+              <div class="destination-name"><div class="dest-icon dest-yt">YT</div>YouTube</div>
+              <div class="toggle" data-dest="youtube"></div>
+            </div>
+            <div class="dest-key-row" id="destKeyRow-youtube">
+              <input type="password" class="dest-key-input" id="destKey-youtube" data-dest-key="youtube" placeholder="Pega tu clave de transmisión de YouTube">
+              <button class="dest-key-toggle" data-showkey="youtube" title="Mostrar/ocultar">👁</button>
+            </div>
+            <div class="dest-key-status" id="destKeyStatus-youtube"></div>
           </div>
-          <div class="destination">
-            <div class="destination-name"><div class="dest-icon dest-kick">K</div>Kick</div>
-            <div class="toggle" data-dest="kick"></div>
+          <div class="destination-block">
+            <div class="destination">
+              <div class="destination-name"><div class="dest-icon dest-kick">K</div>Kick</div>
+              <div class="toggle" data-dest="kick"></div>
+            </div>
+            <div class="dest-key-row" id="destKeyRow-kick">
+              <input type="password" class="dest-key-input" id="destKey-kick" data-dest-key="kick" placeholder="Pega tu clave de transmisión de Kick">
+              <button class="dest-key-toggle" data-showkey="kick" title="Mostrar/ocultar">👁</button>
+            </div>
+            <div class="dest-key-status" id="destKeyStatus-kick"></div>
           </div>
-          <div class="destination">
-            <div class="destination-name"><div class="dest-icon dest-ig">IG</div>Instagram</div>
-            <div class="toggle" data-dest="instagram"></div>
+          <div class="destination-block">
+            <div class="destination">
+              <div class="destination-name"><div class="dest-icon dest-ig">IG</div>Instagram</div>
+              <div class="toggle" data-dest="instagram"></div>
+            </div>
+            <div class="dest-key-row" id="destKeyRow-instagram">
+              <input type="password" class="dest-key-input" id="destKey-instagram" data-dest-key="instagram" placeholder="Pega tu clave de transmisión de Instagram">
+              <button class="dest-key-toggle" data-showkey="instagram" title="Mostrar/ocultar">👁</button>
+            </div>
+            <div class="dest-key-status" id="destKeyStatus-instagram"></div>
           </div>
         </div>
+        <div class="dest-key-hint">Tu clave se guarda solo en este navegador, nunca se comparte con otros usuarios.</div>
       </div>
 
       <div>
@@ -2137,8 +2224,70 @@ function refreshSlots(){
 document.querySelectorAll('.toggle').forEach(t => {
   t.addEventListener('click', () => t.classList.toggle('on'));
 });
+// ==== Stream keys per platform (saved locally per user, never shared) ====
+const streamDestinations = ['youtube','kick','instagram'];
+const destIngestUrls = {
+  youtube: 'rtmp://a.rtmp.youtube.com/live2',
+  kick: 'rtmps://fa723fc1b171.global-contribute.live-video.net',
+  instagram: 'rtmps://live-upload.instagram.com:443/rtmp/'
+};
+
+function destKeyStorageKey(dest){ return `voxa_stream_key_${dest}`; }
+
+function loadDestKey(dest){
+  try { return localStorage.getItem(destKeyStorageKey(dest)) || ''; }
+  catch(e){ return ''; }
+}
+
+function saveDestKey(dest, value){
+  try { localStorage.setItem(destKeyStorageKey(dest), value); }
+  catch(e){ /* storage unavailable, ignore */ }
+}
+
+function refreshDestKeyStatus(dest){
+  const statusEl = document.getElementById(`destKeyStatus-${dest}`);
+  const input = document.getElementById(`destKey-${dest}`);
+  if(!statusEl || !input) return;
+  if(input.value.trim().length > 0){
+    statusEl.textContent = 'Clave guardada en este navegador ✓';
+    statusEl.classList.add('saved');
+    statusEl.classList.remove('missing');
+  } else {
+    statusEl.textContent = 'Falta pegar tu clave de transmisión';
+    statusEl.classList.remove('saved');
+    statusEl.classList.add('missing');
+  }
+}
+
+streamDestinations.forEach(dest => {
+  const input = document.getElementById(`destKey-${dest}`);
+  if(!input) return;
+  input.value = loadDestKey(dest);
+  refreshDestKeyStatus(dest);
+  input.addEventListener('input', () => {
+    saveDestKey(dest, input.value.trim());
+    refreshDestKeyStatus(dest);
+  });
+});
+
+document.querySelectorAll('[data-showkey]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const dest = btn.getAttribute('data-showkey');
+    const input = document.getElementById(`destKey-${dest}`);
+    if(!input) return;
+    input.type = input.type === 'password' ? 'text' : 'password';
+  });
+});
+
 document.querySelectorAll('[data-dest]').forEach(t => {
   t.addEventListener('click', () => {
+    const dest = t.getAttribute('data-dest');
+    const key = loadDestKey(dest);
+    if(t.classList.contains('on') && key.length === 0){
+      t.classList.remove('on');
+      showUpgradeToast(`Pega tu clave de transmisión de ${dest === 'youtube' ? 'YouTube' : dest === 'kick' ? 'Kick' : 'Instagram'} antes de activarlo.`);
+      return;
+    }
     const activeCount = document.querySelectorAll('[data-dest].on').length;
     if(activeCount > maxDestinationsAllowed){
       t.classList.remove('on');
